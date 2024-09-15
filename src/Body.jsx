@@ -1,7 +1,7 @@
 import VideoContainer from "./VideoContainer";
 const Body = () => {
   return (
-    <div>
+    <div className="px-5">
       <VideoContainer />
     </div>
   );
