@@ -1,40 +1,36 @@
 import { AiOutlineMenu } from "react-icons/ai";
-import { CiSearch } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "./store/menuSice";
 import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 const Header = () => {
   const dispatch = useDispatch();
   const handleToggle = () => {
     dispatch(toggleMenu());
   };
+
   return (
-    <div className="flex justify-between items-center h-14 shadow-md px-5 sticky top-0 bg-white">
-      <div className="flex items-center gap-5">
-        <AiOutlineMenu
-          className="text-2xl cursor-pointer"
-          onClick={() => handleToggle()}
-        />
-        <Link to="/">
-          <h1 className="text-2xl font-medium select-none">
-            <span className="text-orange-500 ">Focus</span>
-            <span className="text-black">Tube</span>
-          </h1>
-        </Link>
+    <>
+      <div className="grid grid-cols-[auto,1fr,auto,auto] items-center sticky top-0 bg-white px-5 py-2">
+        <div className="flex items-center gap-4 text:2xl sm:text-xl">
+          <AiOutlineMenu
+            className=" cursor-pointer justify-self-start"
+            onClick={() => handleToggle()}
+          />
+          <Link to="/" className="justify-self-right">
+            <h1 className="  font-medium select-none">
+              <span className="text-orange-500 ">Focus</span>
+              <span className="text-black">Tube</span>
+            </h1>
+          </Link>
+        </div>
+        <div className="flex justify-self-center w-1/2 ">
+          <SearchBar />
+        </div>
+        <CgProfile className="text-2xl justify-self-end" />
       </div>
-      <div className="flex w-2/5">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="px-4 py-1.5 rounded-l-full outline-none border-2 border-gray-200 w-full "
-        />
-        <button className="bg-white px-4 rounded-r-full border-2 border-gray-200">
-          <CiSearch className="text-xl" />
-        </button>
-      </div>
-      <CgProfile className="text-2xl" />
-    </div>
+    </>
   );
 };
 export default Header;
