@@ -6,11 +6,13 @@ import SideBar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 const App = () => {
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative">
       <Provider store={store}>
         <Header />
-        <SideBar />
-        <Outlet />
+        <div className="flex">
+          <SideBar />
+          <Outlet />
+        </div>
       </Provider>
     </div>
   );
