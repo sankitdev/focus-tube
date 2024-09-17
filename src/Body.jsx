@@ -1,8 +1,11 @@
 import VideoContainer from "./VideoContainer";
+import { URL_POPULAR } from "./constant";
+import useFetch from "./hooks/useFetch";
 const Body = () => {
+  const data = useFetch(URL_POPULAR);
   return (
     <div className="px-5">
-      <VideoContainer />
+      <VideoContainer result={data} />
     </div>
   );
 };
