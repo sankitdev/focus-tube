@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import "./index.css";
 import WatchPage from "./WatchPage.jsx";
 import Body from "./Body.jsx";
+import Result from "./Result.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "watch",
         element: <WatchPage />,
+      },
+      {
+        path: "results",
+        element: <Result />,
       },
     ],
   },
