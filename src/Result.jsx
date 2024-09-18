@@ -6,6 +6,7 @@ import useFetch from "./hooks/useFetch";
 const Result = () => {
   const [value] = useSearchParams();
   const data = useFetch(SEARCH_URL, value.get("search_query"));
-  return <VideoContainer result={data?.items} />;
+  console.log(data);
+  return <VideoContainer result={data} />;
 };
 export default Result;

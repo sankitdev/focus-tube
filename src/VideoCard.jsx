@@ -1,6 +1,6 @@
 const VideoCard = ({ snippet, statistics }) => {
   const { channelTitle, title, thumbnails, publishedAt } = snippet;
-  const { viewCount } = statistics;
+  const { viewCount } = statistics ?? {};
   const convertCount = (viewCount) => {
     if (viewCount.length >= 4 && viewCount.length <= 6) {
       let convert = +viewCount / 1000;
@@ -19,7 +19,9 @@ const VideoCard = ({ snippet, statistics }) => {
   return (
     <div className="bg-white rounded-md shadow-md">
       <img
-        src={thumbnails?.maxres?.url}
+        src={
+          thumbnails?.maxres ? thumbnails?.maxres?.url : thumbnails?.high?.url
+        }
         className="w-full h-48 object-cover rounded-t-md"
         alt={title}
       />
@@ -27,7 +29,8 @@ const VideoCard = ({ snippet, statistics }) => {
         <h1 className="text-md sm:text-lg font-semibold truncate">{title}</h1>
         <h2 className="text-gray-600 text-sm">{channelTitle}</h2>
         <h3 className="text-gray-500 text-xs mt-1">
-          <span>{convertCount(viewCount)}</span> • <span>{publishedAt}</span>
+          <span>{viewCount && convertCount(viewCount)}</span> •{" "}
+          <span>{publishedAt}</span>
         </h3>
       </div>
     </div>
