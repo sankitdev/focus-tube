@@ -1,28 +1,64 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SEARCH_AUTOCOMPLETE } from "./constant";
+import { useDispatch, useSelector } from "react-redux";
+import { cacheResult } from "./store/SearchCache";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestion, setSearchSuggestion] = useState([]);
-  const [state, setState] = useState(false);
+  const [dropdownVisible, setdropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
+  const location = useLocation();
   useEffect(() => {
-    const timer = setTimeout(() => getSearchSuggestion(), 200);
+    setdropdownVisible(false);
+  }, [location]);
+
+  const searchCache = useSelector((store) => store.search);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setSearchSuggestion([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      if (searchCache[searchQuery]) {
+        setSearchSuggestion(searchCache[searchQuery]);
+      } else {
+        getSearchSuggestion();
+      }
+    }, 200);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const handleOnBlur = () => {
-    setState(false);
+  const handleOnBlur = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget)) {
+      setdropdownVisible(false);
+      setSearchQuery("");
+    }
   };
   const handleOnFocus = () => {
-    setState(true);
+    if (searchSuggestion.length > 0) {
+      setdropdownVisible(true);
+    }
   };
 
   const getSearchSuggestion = async () => {
-    const response = await fetch(SEARCH_AUTOCOMPLETE + searchQuery);
-    const data = await response.json();
-    setSearchSuggestion(data[1]);
+    try {
+      console.log(searchSuggestion);
+      const response = await fetch(SEARCH_AUTOCOMPLETE + searchQuery);
+      const data = await response.json();
+      setSearchSuggestion(data[1] || []);
+      dispatch(
+        cacheResult({
+          [searchQuery]: data[1],
+        })
+      );
+    } catch (error) {
+      console.error("Error in getSearchSuggestion: ", error);
+    }
   };
   return (
     <div className="relative w-full">
@@ -40,17 +76,24 @@ const SearchBar = () => {
           <CiSearch className="text-xl" />
         </Link>
       </div>
-      {state && (
-        <div className="absolute top-full px-4 py-2 w-full shadow-md bg-white">
-          {searchSuggestion.length > 0 &&
-            searchSuggestion.map((items, index) => (
+      {searchSuggestion.length > 0 && (
+        <div
+          ref={dropdownRef}
+          onClick={() => setdropdownVisible(false)}
+          className="absolute top-full px-4 py-2 w-full shadow-md bg-white"
+        >
+          {searchSuggestion.map((items) => (
+            <Link to={"/results?search_query=" + items} key={items}>
               <h1
-                key={index}
                 className="cursor-pointer hover:bg-slate-100 flex items-center"
+                onClick={() => {
+                  setSearchQuery(items);
+                }}
               >
                 <CiSearch className="mr-2" /> {items}
               </h1>
-            ))}
+            </Link>
+          ))}
         </div>
       )}
     </div>
